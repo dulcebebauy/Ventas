@@ -1,0 +1,14 @@
+<div style="
+width:512px;
+height:512px;
+background:#111;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:200px;
+font-family:sans-serif;
+border-radius:100px;
+">
+🛒
+</div>
