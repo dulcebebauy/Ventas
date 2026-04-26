@@ -519,9 +519,9 @@ function pagar() {
       if (discountEl) discountEl.value = 0;
       if (descEl) descEl.value = "";
 
-      alert("Venta registrada");
+      //alert("Venta registrada");
     })
-    .catch(() => alert("Error en venta"))
+    .catch(() => console.log("Error en venta");)
     .finally(() => {
       hideLoader();
       payBtn.disabled = false;
