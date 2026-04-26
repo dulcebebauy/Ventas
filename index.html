@@ -133,6 +133,13 @@ button {
   margin-left: 8px;
   font-weight: bold;
 }
+#modal {
+  transition: transform 0.2s ease;
+}
+
+#modal.hidden {
+  transform: translateY(100%);
+}
 </style>
 </head>
 
@@ -148,22 +155,21 @@ button {
 <div class="cart" onclick="openCart()">🛒</div>
 
 <div class="modal" id="modal">
-  <h3>Carrito</h3>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h3>Carrito</h3>
+
+    <button onclick="toggleCart()" style="
+      border:none;
+      background:#111;
+      color:white;
+      padding:6px 10px;
+      border-radius:6px;
+    ">
+      ─
+    </button>
+  </div>
 
   <div id="items"></div>
-
-  <hr>
-
-  <!-- 💸 DESCUENTO -->
-  <div>
-    <label>Descuento ($):</label>
-    <input type="number" id="discount" value="0" oninput="updateCartTotal()" />
-  </div>
-
-  <div>
-    <label>Descripción descuento:</label>
-    <input type="text" id="discountDesc" placeholder="Motivo del descuento" />
-  </div>
 
   <hr>
 
@@ -171,12 +177,12 @@ button {
 
   <button class="pay" onclick="pagar()">PAGAR EFECTIVO</button>
 </div>
-
 <script>
 const API = "https://script.google.com/macros/s/AKfycby3XE-7RsP_0VJXPkZsEoll3QEexrd5HldRpRmO2K80Zcbfw4Jf92eFrSinr55MyjWsHg/exec";
 
 let productos = [];
 let carrito = [];
+let cartOpen = false;
 
 /* ------------------ CARGAR PRODUCTOS ------------------ */
 function cargarProductos() {
@@ -245,6 +251,7 @@ function updateTotal() {
 
 /* ------------------ MODAL ------------------ */
 function openCart() {
+  cartOpen = true;
   document.getElementById("modal").style.display = "block";
   renderCart();
 }
@@ -274,6 +281,19 @@ function renderCart() {
   });
 
   updateCartTotal();
+}
+/* ------  MINIMIZAR CARRO -------*/
+function toggleCart() {
+  const modal = document.getElementById("modal");
+
+  cartOpen = !cartOpen;
+
+  if (cartOpen) {
+    modal.style.display = "block";
+    renderCart();
+  } else {
+    modal.style.display = "none";
+  }
 }
 /* ------------------ PAGAR ------------------ */
 function pagar() {
