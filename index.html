@@ -801,7 +801,7 @@ function formatMoney(n) {
 /* ------------------ INIT ------------------ */
 cargarProductos();
 loadCart();
-
+/*
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js")
@@ -809,7 +809,12 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.log("SW error", err));
   });
 }
-  
+*/
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker registrado"))
+    .catch(err => console.error("Service Worker falló", err));
+}
 </script>
 
 </body>
