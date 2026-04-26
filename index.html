@@ -344,6 +344,19 @@ button {
 }
 #totalBox{
   margin-left: auto;
+  font-weight: bold;
+  font-size: 18px;
+
+  transition: transform 0.15s ease, color 0.2s ease;
+}
+/* color cuando hay ventas */
+#totalBox.active {
+  color: #4caf50;
+}
+
+/* animación */
+#totalBox.bump {
+  transform: scale(1.15);
 }
 </style>
 </head>
@@ -472,12 +485,32 @@ function add(id) {
 
 /* ------------------ TOTAL ------------------ */
 function updateTotal() {
+  /*
   let total = carrito.reduce((sum, i) =>
     sum + i.precio * i.cantidad, 0
   );
 
   document.getElementById("total").innerText = total;
+  */
+    let total = carrito.reduce((sum, i) =>
+    sum + i.precio * i.cantidad, 0
+  );
 
+  const totalEl = document.getElementById("total");
+  const box = document.getElementById("totalBox");
+
+  // formateo
+  totalEl.innerText = formatMoney(total);
+
+  // color dinámico
+  if (total > 0) box.classList.add("active");
+  else box.classList.remove("active");
+
+  // animación
+  box.classList.remove("bump");
+  void box.offsetWidth; // reset animación
+  box.classList.add("bump");
+  
   // 🔥 también actualizar carrito
   updateCartTotal();
 }
@@ -745,6 +778,10 @@ function filtrarProductos() {
   );
 
   renderProductos(filtrados);
+}
+/* ------------ MONEDA ---------- */
+function formatMoney(n) {
+  return n.toLocaleString("es-UY");
 }
 /* ------------------ INIT ------------------ */
 cargarProductos();
