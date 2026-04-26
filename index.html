@@ -423,11 +423,11 @@ function cargarProductos() {
 
 /* ------------------ RENDER PRODUCTOS ------------------ */
 
-function renderProductos() {
+function renderProductos(lista = productos) {
   const cont = document.getElementById("productos");
   cont.innerHTML = "";
 
-  productos.forEach(p => {
+  lista.forEach(p => {
     const div = document.createElement("div");
     div.className = "card";
 
