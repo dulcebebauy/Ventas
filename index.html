@@ -299,6 +299,38 @@ button {
     transform: rotate(360deg);
   }
 }
+.pay {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 8px;
+
+  color: white;
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+/* efectivo */
+.cash {
+  background: #4caf50;
+}
+
+/* débito */
+.debit {
+  background: #2196f3;
+}
+
+/* crédito */
+.credit {
+  background: #9c27b0;
+}
+
+.pay:active {
+  transform: scale(0.98);
+}
 </style>
 </head>
 
@@ -347,7 +379,11 @@ button {
 
   </div>
   
-  <button class="pay" onclick="pagar()">PAGAR EFECTIVO</button>
+  <button class="pay cash" onclick="pagar('efectivo')">Efectivo</button>
+  
+  <button class="pay debit" onclick="pagar('debito')">Tarjeta Débito</button>
+  
+  <button class="pay credit" onclick="pagar('credito')">Tarjeta Crédito</button>
 </div>
 <script>
 const API = "https://script.google.com/macros/s/AKfycby3XE-7RsP_0VJXPkZsEoll3QEexrd5HldRpRmO2K80Zcbfw4Jf92eFrSinr55MyjWsHg/exec";
@@ -471,6 +507,58 @@ function toggleCart() {
   }
 }
 /* ------------------ PAGAR ------------------ */
+function pagar(metodo) {
+  const discountEl = document.getElementById("discount");
+  const descEl = document.getElementById("discountDesc");
+
+  const discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
+  const desc = descEl ? descEl.value || "" : "";
+
+  let items = carrito.map(i => ({
+    nombre: i.nombre,
+    cantidad: i.cantidad,
+    precio: i.precio,
+    total: i.precio * i.cantidad
+  }));
+
+  if (discount > 0) {
+    items.push({
+      nombre: "Descuento - " + (desc || "Sin descripción"),
+      cantidad: 1,
+      precio: -discount,
+      total: -discount
+    });
+  }
+
+  const venta = {
+    metodo: metodo, // 🔥 ahora dinámico
+    items: items
+  };
+
+  const url = API +
+    "?action=venta&data=" +
+    encodeURIComponent(JSON.stringify(venta));
+
+  fetch(url)
+    .then(() => {
+      carrito = [];
+      updateTotal();
+      renderCart();
+
+      document.getElementById("modal").style.display = "none";
+
+      if (discountEl) discountEl.value = 0;
+      if (descEl) descEl.value = "";
+    })
+    .catch(() => alert("Error venta"))
+    .finally(() => {
+      hideLoader();
+      document.querySelectorAll(".pay").forEach(b => b.disabled = false);
+    });
+
+    localStorage.removeItem("carrito");
+}
+/***
 function pagar() {
   // 🔒 bloquear doble click
   const payBtn = document.querySelector(".pay");
@@ -484,19 +572,6 @@ function pagar() {
   const discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
   const desc = descEl ? descEl.value || "" : "";
 
-  /*
-  const venta = {
-    metodo: "efectivo",
-    descuento: discount,
-    descripcionDescuento: desc,
-    items: carrito.map(i => ({
-      nombre: i.nombre,
-      cantidad: i.cantidad,
-      precio: i.precio,
-      total: i.precio * i.cantidad
-    }))
-  };
-  */
   let items = carrito.map(i => ({
     nombre: i.nombre,
     cantidad: i.cantidad,
@@ -533,7 +608,6 @@ function pagar() {
       if (discountEl) discountEl.value = 0;
       if (descEl) descEl.value = "";
 
-      //alert("Venta registrada");
     })
     .catch(() => {
           alert("Error en venta");
@@ -545,6 +619,7 @@ function pagar() {
 
     localStorage.removeItem("carrito"); // 🔥 limpiar storage
 }
+***/
 /*
 function updateCartTotal() {
   let total = carrito.reduce((sum, i) =>
