@@ -615,9 +615,8 @@ function pagar(metodo) {
       renderCart();
 
       document.getElementById("modal").style.display = "none";
-
-      if (discountAmount) discountAmount = 0;
-      if (descEl) descEl.value = "";
+      document.getElementById("discount").value = 0;
+      document.getElementById("discountDesc").value = "";
     })
     .catch(() => alert("Error venta"))
     .finally(() => {
