@@ -130,7 +130,7 @@ function renderProductos() {
     div.innerHTML = `
       <strong>${p.nombre}</strong>
       <p>$${p.precio}</p>
-      <button onclick="add(${p.id})">Agregar</button>
+      <button onclick="add('${p.id}')">Agregar</button>
     `;
 
     cont.appendChild(div);
