@@ -393,6 +393,8 @@ function add(id) {
   if (modal.style.display === "block") {
     renderCart();
   }
+
+  saveCart();
 }
 
 /* ------------------ TOTAL ------------------ */
@@ -524,6 +526,8 @@ function pagar() {
       hideLoader();
       payBtn.disabled = false;
     });
+
+    localStorage.removeItem("carrito"); // 🔥 limpiar storage
 }
 /*
 function updateCartTotal() {
@@ -575,6 +579,7 @@ function changeQty(index, value) {
 
   updateTotal();
   renderCart();
+  saveCart();
 }
 
 function removeItem(index) {
@@ -582,6 +587,7 @@ function removeItem(index) {
 
   updateTotal();
   renderCart();
+  saveCart();
 }
 /* -------------- LOADER --------------- */
 function showLoader() {
@@ -591,8 +597,28 @@ function showLoader() {
 function hideLoader() {
   document.getElementById("loader").classList.add("hidden");
 }
+/* ----------------- PREVENIR RECARGA ---------- */
+window.addEventListener("beforeunload", function (e) {
+  if (carrito.length > 0) {
+    e.preventDefault();
+    e.returnValue = "Tenés una venta en curso. Si salís, se perderán los datos.";
+  }
+});
+/* ------------- GUARDAR CARRITO LOCAL --------- */
+function saveCart() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+function loadCart() {
+  const data = localStorage.getItem("carrito");
+
+  if (data) {
+    carrito = JSON.parse(data);
+    updateTotal();
+  }
+}
 /* ------------------ INIT ------------------ */
 cargarProductos();
+loadCart();
 </script>
 
 </body>
