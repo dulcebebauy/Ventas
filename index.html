@@ -535,7 +535,9 @@ function pagar() {
 
       //alert("Venta registrada");
     })
-    .catch(() => console.log("Error en venta");)
+    .catch(() => {
+          console.log("Error en venta");
+    })
     .finally(() => {
       hideLoader();
       payBtn.disabled = false;
