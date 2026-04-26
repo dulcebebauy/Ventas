@@ -508,6 +508,12 @@ function toggleCart() {
 }
 /* ------------------ PAGAR ------------------ */
 function pagar(metodo) {
+  // 🔒 bloquear doble click
+  const payBtn = document.querySelector(".pay");
+  payBtn.disabled = true;
+
+  showLoader();
+  
   const discountEl = document.getElementById("discount");
   const descEl = document.getElementById("discountDesc");
 
