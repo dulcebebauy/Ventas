@@ -590,7 +590,7 @@ function pagar(metodo) {
     total: i.precio * i.cantidad
   }));
 
-  if (discount > 0) {
+  if (discountAmount > 0) {
     items.push({
       nombre: "Descuento - " + (desc || "Sin descripción"),
       cantidad: 1,
