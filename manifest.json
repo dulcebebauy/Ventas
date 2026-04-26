@@ -1,5 +1,5 @@
 {
-  "name": "POS SIMPLE",
+  "name": "POS DB",
   "short_name": "POS",
   "start_url": "./index.html",
   "display": "standalone",
