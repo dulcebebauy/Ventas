@@ -139,7 +139,7 @@ function renderProductos() {
 
 /* ------------------ AGREGAR AL CARRITO ------------------ */
 function add(id) {
-  const prod = productos.find(p => p.id === id);
+  const prod = productos.find(p => String(p.id) === String(id));
 
   let item = carrito.find(i => i.id === id);
 
@@ -152,6 +152,12 @@ function add(id) {
   });
 
   updateTotal();
+
+  // 🔥 NUEVO: si el modal está abierto, actualizar vista
+  const modal = document.getElementById("modal");
+  if (modal.style.display === "block") {
+    renderCart();
+  }
 }
 
 /* ------------------ TOTAL ------------------ */
