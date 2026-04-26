@@ -197,6 +197,15 @@ button {
 
   <h3>Total: $<span id="cartTotal">0</span></h3>
 
+  <div class="discount-box">
+    <label>Descuento ($):</label>
+    <input type="number" id="discount" value="0" oninput="updateCartTotal()" />
+  </div>
+  
+  <div class="discount-box">
+    <label>Descripción del descuento:</label>
+    <input type="text" id="discountDesc" placeholder="Motivo del descuento" />
+  </div>
   <button class="pay" onclick="pagar()">PAGAR EFECTIVO</button>
 </div>
 <script>
@@ -350,6 +359,7 @@ function pagar() {
   document.getElementById("discount").value = 0;
   document.getElementById("discountDesc").value = "";
 }
+/*
 function updateCartTotal() {
   let total = carrito.reduce((sum, i) =>
     sum + i.precio * i.cantidad, 0
@@ -367,6 +377,27 @@ function updateCartTotal() {
 
   const el = document.getElementById("cartTotal");
   if (el) el.innerText = finalTotal;
+}
+*/
+function updateCartTotal() {
+  let subtotal = carrito.reduce((sum, i) =>
+    sum + i.precio * i.cantidad, 0
+  );
+
+  const discountEl = document.getElementById("discount");
+  const descEl = document.getElementById("discountDesc");
+
+  let discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
+  let desc = descEl ? descEl.value : "";
+
+  let total = subtotal - discount;
+  if (total < 0) total = 0;
+
+  document.getElementById("cartTotal").innerText = total;
+
+  // 🔥 opcional: guardar estado visual (debug útil)
+  window.currentDiscount = discount;
+  window.currentDiscountDesc = desc;
 }
 /* ------------------ CONTROL CANTIDADES ------------- */
 function changeQty(index, value) {
