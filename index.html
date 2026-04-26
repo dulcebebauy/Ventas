@@ -717,12 +717,16 @@ function updateCartTotal() {
   const discountEl = document.getElementById("discount");
   const descEl = document.getElementById("discountDesc");
 
-  let discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
+  //let discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
   let desc = descEl ? descEl.value : "";
 
-  //let total = subtotal - discount;
-  if (discountPercent > 100) discountPercent = 100; // máximo 100%
+  // descuento en porcentaje
+  let discountPercent = discountEl ? parseFloat(discountEl.value) || 0 : 0;
+  let desc = descEl ? descEl.value : "";
 
+  if (discountPercent > 100) discountPercent = 100; // máximo 100%
+  //let total = subtotal - discount;
+  
   // calcular monto del descuento
   let discountAmount = subtotal * discountPercent / 100;
   let total = subtotal - discountAmount;
