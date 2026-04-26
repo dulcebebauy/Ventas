@@ -124,10 +124,11 @@ async function sincronizar() {
   let ventas = JSON.parse(localStorage.getItem("ventas")) || [];
 
   for (let v of ventas) {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(v)
-    });
+    try {
+      await fetch(`${API_URL}?action=venta&data=${encodeURIComponent(JSON.stringify(v))}`);
+    } catch {
+      return; // corta si falla
+    }
   }
 
   localStorage.removeItem("ventas");
@@ -209,11 +210,8 @@ async function pagar(metodo) {
   };
 
   try {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(venta)
-    });
-  } catch {
+    await fetch(`${API_URL}?action=venta&data=${encodeURIComponent(JSON.stringify(venta))}`);
+  } catch (e) {
     guardarOffline(venta);
   }
 
@@ -223,7 +221,6 @@ async function pagar(metodo) {
 
   alert("Venta guardada");
 }
-
 cargar();
 </script>
 
