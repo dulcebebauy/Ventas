@@ -736,26 +736,11 @@ function loadCart() {
 function filtrarProductos() {
   const texto = document.getElementById("search").value.toLowerCase();
 
-  const cont = document.getElementById("productos");
-  cont.innerHTML = "";
-
   const filtrados = productos.filter(p =>
     p.nombre.toLowerCase().includes(texto)
   );
 
-  filtrados.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "producto";
-
-    div.innerHTML = `
-      <strong>${p.nombre}</strong>
-      <br>$${p.precio}
-    `;
-
-    div.onclick = () => add(p.id);
-
-    cont.appendChild(div);
-  });
+  renderProductos(filtrados);
 }
 /* ------------------ INIT ------------------ */
 cargarProductos();
