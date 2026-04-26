@@ -7,17 +7,31 @@
 
 <style>
 body {
-  font-family: system-ui;
   margin: 0;
+  font-family: system-ui;
   background: #f4f4f4;
+
+  padding-top: 60px; /* 🔥 ajusta según altura del header */
 }
 
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 1000;
+
   background: #111;
   color: white;
+
   padding: 12px;
+
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 .container {
