@@ -101,6 +101,19 @@ button {
 
   <hr>
 
+  <!-- 💸 DESCUENTO -->
+  <div>
+    <label>Descuento ($):</label>
+    <input type="number" id="discount" value="0" oninput="updateCartTotal()" />
+  </div>
+
+  <div>
+    <label>Descripción descuento:</label>
+    <input type="text" id="discountDesc" placeholder="Motivo del descuento" />
+  </div>
+
+  <hr>
+
   <h3>Total: $<span id="cartTotal">0</span></h3>
 
   <button class="pay" onclick="pagar()">PAGAR EFECTIVO</button>
@@ -187,26 +200,42 @@ function renderCart() {
   const cont = document.getElementById("items");
   cont.innerHTML = "";
 
-  carrito.forEach(i => {
+  carrito.forEach((i, index) => {
     const div = document.createElement("div");
     div.className = "item";
 
     div.innerHTML = `
-      ${i.nombre} x${i.cantidad}
-      <span>$${i.precio * i.cantidad}</span>
+      <div style="flex:1; cursor:pointer;" onclick="removeItem(${index})">
+        ${i.nombre}
+      </div>
+
+      <div>
+        <button onclick="changeQty(${index}, -1)">-</button>
+        ${i.cantidad}
+        <button onclick="changeQty(${index}, 1)">+</button>
+      </div>
+
+      <div>$${i.precio * i.cantidad}</div>
     `;
 
     cont.appendChild(div);
   });
 
+  updateCartTotal();
+}
   // 🔥 actualizar total también al renderizar
   updateCartTotal();
 }
 
 /* ------------------ PAGAR ------------------ */
 function pagar() {
+  const discount = parseFloat(document.getElementById("discount").value) || 0;
+  const discountDesc = document.getElementById("discountDesc").value || "";
+
   const venta = {
     metodo: "efectivo",
+    descuento: discount,
+    descripcionDescuento: discountDesc,
     items: carrito.map(i => ({
       nombre: i.nombre,
       cantidad: i.cantidad,
@@ -221,19 +250,44 @@ function pagar() {
 
   fetch(url)
     .then(() => alert("Venta registrada"))
-    .catch(err => alert("Error"));
+    .catch(() => alert("Error"));
 
   carrito = [];
   updateTotal();
   document.getElementById("modal").style.display = "none";
-}
 
+  document.getElementById("discount").value = 0;
+  document.getElementById("discountDesc").value = "";
+}
 function updateCartTotal() {
   let total = carrito.reduce((sum, i) =>
     sum + i.precio * i.cantidad, 0
   );
 
-  document.getElementById("cartTotal").innerText = total;
+  let discount = parseFloat(document.getElementById("discount").value) || 0;
+
+  let finalTotal = total - discount;
+  if (finalTotal < 0) finalTotal = 0;
+
+  document.getElementById("cartTotal").innerText = finalTotal;
+}
+/* ------------------ CONTROL CANTIDADES ------------- */
+function changeQty(index, value) {
+  carrito[index].cantidad += value;
+
+  if (carrito[index].cantidad <= 0) {
+    carrito.splice(index, 1);
+  }
+
+  updateTotal();
+  renderCart();
+}
+
+function removeItem(index) {
+  carrito.splice(index, 1);
+
+  updateTotal();
+  renderCart();
 }
 /* ------------------ INIT ------------------ */
 cargarProductos();
