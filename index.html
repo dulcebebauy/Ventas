@@ -556,6 +556,7 @@ function renderCart() {
   updateCartTotal();
 }
 /* ------  MINIMIZAR CARRO -------*/
+/*
 function toggleCart() {
   const modal = document.getElementById("modal");
 
@@ -568,6 +569,7 @@ function toggleCart() {
     modal.style.display = "none";
   }
 }
+*/
 /* ------------------ PAGAR ------------------ */
 function pagar(metodo) {
   // 🔒 bloquear doble click
@@ -797,6 +799,50 @@ function filtrarProductos() {
 /* ------------ MONEDA ---------- */
 function formatMoney(n) {
   return n.toLocaleString("es-UY");
+}
+/* ------------ MINIMIZAR ------------------- */
+let startY = 0;
+let isDragging = false;
+const modal = document.getElementById("modal");
+
+modal.addEventListener("touchstart", e => {
+  startY = e.touches[0].clientY;
+  isDragging = true;
+});
+modal.addEventListener("touchmove", e => {
+  if (!isDragging) return;
+  const deltaY = e.touches[0].clientY - startY;
+
+  // mover el modal visualmente
+  if (deltaY > 0) { // solo hacia abajo
+    modal.style.transform = `translateY(${deltaY}px)`;
+  }
+});
+modal.addEventListener("touchend", e => {
+  isDragging = false;
+  const deltaY = e.changedTouches[0].clientY - startY;
+
+  if (deltaY > 100) { // si arrastró más de 100px, minimizar
+    toggleCart(false); // cerramos el modal
+  } else {
+    // volver a posición original
+    modal.style.transform = "translateY(0)";
+  }
+});
+function toggleCart(forceClose = null) {
+  if (forceClose !== null) {
+    cartOpen = !forceClose; // forzamos cerrar si true
+  } else {
+    cartOpen = !cartOpen;
+  }
+
+  if (cartOpen) {
+    modal.style.display = "block";
+    renderCart();
+  } else {
+    modal.style.display = "none";
+    modal.style.transform = "translateY(0)";
+  }
 }
 /* ------------------ INIT ------------------ */
 cargarProductos();
