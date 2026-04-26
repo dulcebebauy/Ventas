@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>POS PRO+</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>POS SIMPLE</title>
 
 <style>
 body {
-  margin: 0;
   font-family: system-ui;
-  background: #f2f2f2;
+  margin: 0;
+  background: #f4f4f4;
 }
 
-/* HEADER */
-.header {
+header {
   background: #111;
   color: white;
   padding: 12px;
-  font-size: 20px;
   display: flex;
   justify-content: space-between;
 }
 
-/* GRID */
-.productos {
+.container {
+  padding: 10px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  padding: 10px;
 }
 
-.producto {
+.card {
   background: white;
-  border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
+  border-radius: 10px;
   text-align: center;
-  transition: 0.2s;
 }
 
-.producto:active {
-  transform: scale(0.95);
+button {
+  padding: 8px;
+  width: 100%;
+  margin-top: 5px;
+  border: none;
+  border-radius: 6px;
+  background: #111;
+  color: white;
 }
 
-/* CARRITO FLOAT */
-.carrito-btn {
+.cart {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -51,140 +52,124 @@ body {
   color: white;
   padding: 15px;
   border-radius: 50%;
+  cursor: pointer;
 }
 
-/* MODAL */
 .modal {
   position: fixed;
   bottom: 0;
-  width: 100%;
+  left: 0;
+  right: 0;
   background: white;
-  border-radius: 20px 20px 0 0;
   padding: 15px;
+  border-radius: 15px 15px 0 0;
   display: none;
+  max-height: 60vh;
+  overflow: auto;
 }
 
-/* ITEMS */
 .item {
   display: flex;
   justify-content: space-between;
   margin: 5px 0;
 }
 
-/* BOTONES */
-.btn {
-  padding: 12px;
-  margin-top: 5px;
-  border: none;
+.pay {
+  margin-top: 10px;
   width: 100%;
-  border-radius: 8px;
+  padding: 10px;
+  background: green;
 }
-
-.efectivo { background: #4caf50; color: white; }
-.debito { background: #2196f3; color: white; }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <span>POS</span>
-  <span>$<span id="total">0</span></span>
-</div>
+<header>
+  <div>POS</div>
+  <div>Total: $<span id="total">0</span></div>
+</header>
 
-<div class="productos" id="productos"></div>
+<div class="container" id="productos"></div>
 
-<div class="carrito-btn" onclick="abrirModal()">🛒</div>
+<div class="cart" onclick="openCart()">🛒</div>
 
 <div class="modal" id="modal">
   <h3>Carrito</h3>
   <div id="items"></div>
 
-  <button class="btn efectivo" onclick="pagar('efectivo')">Efectivo</button>
-  <button class="btn debito" onclick="pagar('debito')">Débito</button>
+  <button class="pay" onclick="pagar()">PAGAR EFECTIVO</button>
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzE16UNnbFuj1x4SBRAvBc4zvePCtvGNvZ4ydinY--JfP94Yb38Uso6F-PbgtGn_Uo/exec"; 
-  //"https://script.google.com/macros/library/d/1S8jJb1gAFLZbYLUQXAbhmjRQaktGVAYbOLz4-JWY8WhLy9ksd9eVSjCj/1"; 
-  //"https://script.google.com/macros/s/AKfycbzE16UNnbFuj1x4SBRAvBc4zvePCtvGNvZ4ydinY--JfP94Yb38Uso6F-PbgtGn_Uo/exec";
-  //"https://script.google.com/macros/s/AKfycbyKRCDAO0DTctyx0mRbRm1-0tpg6HIspty9QDzqDtImqsm4_R4coLfaYaiirPO-jRfClA/exec";
+const API = "https://script.google.com/macros/s/TU_ID/exec";
+
 let productos = [];
 let carrito = [];
 
-// OFFLINE STORAGE
-function guardarOffline(data) {
-  let ventas = JSON.parse(localStorage.getItem("ventas")) || [];
-  ventas.push(data);
-  localStorage.setItem("ventas", JSON.stringify(ventas));
+/* ------------------ CARGAR PRODUCTOS ------------------ */
+function cargarProductos() {
+  fetch(API + "?action=productos")
+    .then(r => r.json())
+    .then(data => {
+      productos = data;
+      renderProductos();
+    })
+    .catch(err => console.log(err));
 }
 
-// SYNC
-async function sincronizar() {
-  let ventas = JSON.parse(localStorage.getItem("ventas")) || [];
-
-  for (let v of ventas) {
-    try {
-      await fetch(`${API_URL}?action=venta&data=${encodeURIComponent(JSON.stringify(v))}`);
-    } catch {
-      return; // corta si falla
-    }
-  }
-
-  localStorage.removeItem("ventas");
-}
-
-// CARGAR PRODUCTOS
-async function cargar() {
-  const res = await fetch(`${API_URL}?action=productos`);
-  productos = await res.json();
-
-  render();
-  sincronizar();
-}
-
-// RENDER
-function render() {
+/* ------------------ RENDER PRODUCTOS ------------------ */
+function renderProductos() {
   const cont = document.getElementById("productos");
+  cont.innerHTML = "";
 
   productos.forEach(p => {
     const div = document.createElement("div");
-    div.className = "producto";
+    div.className = "card";
 
     div.innerHTML = `
       <strong>${p.nombre}</strong>
-      <br>$${p.precio}
+      <p>$${p.precio}</p>
+      <button onclick="add(${p.id})">Agregar</button>
     `;
-
-    div.onclick = () => agregar(p);
 
     cont.appendChild(div);
   });
 }
 
-// AGREGAR
-function agregar(p) {
-  const item = carrito.find(i => i.id === p.id);
+/* ------------------ AGREGAR AL CARRITO ------------------ */
+function add(id) {
+  const prod = productos.find(p => p.id === id);
+
+  let item = carrito.find(i => i.id === id);
 
   if (item) item.cantidad++;
-  else carrito.push({ ...p, cantidad: 1 });
+  else carrito.push({
+    id: prod.id,
+    nombre: prod.nombre,
+    precio: prod.precio,
+    cantidad: 1
+  });
 
-  actualizarTotal();
+  updateTotal();
 }
 
-// TOTAL
-function actualizarTotal() {
-  let total = carrito.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
+/* ------------------ TOTAL ------------------ */
+function updateTotal() {
+  let total = carrito.reduce((sum, i) =>
+    sum + i.precio * i.cantidad, 0
+  );
+
   document.getElementById("total").innerText = total;
 }
 
-// MODAL
-function abrirModal() {
+/* ------------------ MODAL ------------------ */
+function openCart() {
   document.getElementById("modal").style.display = "block";
-  renderItems();
+  renderCart();
 }
 
-function renderItems() {
+function renderCart() {
   const cont = document.getElementById("items");
   cont.innerHTML = "";
 
@@ -192,15 +177,19 @@ function renderItems() {
     const div = document.createElement("div");
     div.className = "item";
 
-    div.innerHTML = `${i.nombre} x${i.cantidad} <span>$${i.precio * i.cantidad}</span>`;
+    div.innerHTML = `
+      ${i.nombre} x${i.cantidad}
+      <span>$${i.precio * i.cantidad}</span>
+    `;
+
     cont.appendChild(div);
   });
 }
 
-// PAGAR
-async function pagar(metodo) {
+/* ------------------ PAGAR ------------------ */
+function pagar() {
   const venta = {
-    metodo,
+    metodo: "efectivo",
     items: carrito.map(i => ({
       nombre: i.nombre,
       cantidad: i.cantidad,
@@ -209,19 +198,21 @@ async function pagar(metodo) {
     }))
   };
 
-  try {
-    await fetch(`${API_URL}?action=venta&data=${encodeURIComponent(JSON.stringify(venta))}`);
-  } catch (e) {
-    guardarOffline(venta);
-  }
+  const url = API +
+    "?action=venta&data=" +
+    encodeURIComponent(JSON.stringify(venta));
+
+  fetch(url)
+    .then(() => alert("Venta registrada"))
+    .catch(err => alert("Error"));
 
   carrito = [];
-  actualizarTotal();
+  updateTotal();
   document.getElementById("modal").style.display = "none";
-
-  alert("Venta guardada");
 }
-cargar();
+
+/* ------------------ INIT ------------------ */
+cargarProductos();
 </script>
 
 </body>
