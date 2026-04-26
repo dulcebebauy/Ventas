@@ -140,6 +140,30 @@ button {
 #modal.hidden {
   transform: translateY(100%);
 }
+  .cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.min-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: none;
+  background: #666;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.min-btn:active {
+  transform: scale(0.95);
+}
+
+.min-btn:hover {
+  background: #444;
+}
 </style>
 </head>
 
@@ -156,15 +180,11 @@ button {
 
 <div class="modal" id="modal">
   <div style="display:flex;justify-content:space-between;align-items:center;">
-    <h3>Carrito</h3>
-
-    <button onclick="toggleCart()" style="
-      border:none;
-      background:#111;
-      color:white;
-      padding:6px 10px;
-      border-radius:6px;
-    ">
+    <div class="cart-header">
+      <h3>Carrito</h3>
+    
+      <button class="min-btn" onclick="toggleCart()">−</button>
+    </div>
       ─
     </button>
   </div>
@@ -254,6 +274,7 @@ function openCart() {
   cartOpen = true;
   document.getElementById("modal").style.display = "block";
   renderCart();
+  updateCartTotal(); // 🔥 clave
 }
 
 function renderCart() {
@@ -332,12 +353,18 @@ function updateCartTotal() {
     sum + i.precio * i.cantidad, 0
   );
 
-  let discount = parseFloat(document.getElementById("discount").value) || 0;
+  let discountEl = document.getElementById("discount");
+  let discount = 0;
+
+  if (discountEl) {
+    discount = parseFloat(discountEl.value) || 0;
+  }
 
   let finalTotal = total - discount;
   if (finalTotal < 0) finalTotal = 0;
 
-  document.getElementById("cartTotal").innerText = finalTotal;
+  const el = document.getElementById("cartTotal");
+  if (el) el.innerText = finalTotal;
 }
 /* ------------------ CONTROL CANTIDADES ------------- */
 function changeQty(index, value) {
