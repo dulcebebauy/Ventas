@@ -80,6 +80,59 @@ button {
   padding: 10px;
   background: green;
 }
+
+  .cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-left {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cart-left strong {
+  font-size: 14px;
+}
+
+.qty {
+  background: #eee;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.cart-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: #111;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-small:active {
+  transform: scale(0.95);
+}
+
+.price {
+  margin-left: 8px;
+  font-weight: bold;
+}
 </style>
 </head>
 
@@ -202,20 +255,19 @@ function renderCart() {
 
   carrito.forEach((i, index) => {
     const div = document.createElement("div");
-    div.className = "item";
+    div.className = "cart-item";
 
     div.innerHTML = `
-      <div style="flex:1; cursor:pointer;" onclick="removeItem(${index})">
-        ${i.nombre}
+      <div class="cart-left" onclick="removeItem(${index})">
+        <strong>${i.nombre}</strong>
+        <span class="qty">x${i.cantidad}</span>
       </div>
 
-      <div>
-        <button onclick="changeQty(${index}, -1)">-</button>
-        ${i.cantidad}
-        <button onclick="changeQty(${index}, 1)">+</button>
+      <div class="cart-right">
+        <button class="btn-small" onclick="changeQty(${index}, -1)">−</button>
+        <button class="btn-small" onclick="changeQty(${index}, 1)">+</button>
+        <span class="price">$${i.precio * i.cantidad}</span>
       </div>
-
-      <div>$${i.precio * i.cantidad}</div>
     `;
 
     cont.appendChild(div);
@@ -223,7 +275,6 @@ function renderCart() {
 
   updateCartTotal();
 }
-
 /* ------------------ PAGAR ------------------ */
 function pagar() {
   const discount = parseFloat(document.getElementById("discount").value) || 0;
