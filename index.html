@@ -96,7 +96,12 @@ button {
 
 <div class="modal" id="modal">
   <h3>Carrito</h3>
+
   <div id="items"></div>
+
+  <hr>
+
+  <h3>Total: $<span id="cartTotal">0</span></h3>
 
   <button class="pay" onclick="pagar()">PAGAR EFECTIVO</button>
 </div>
@@ -167,6 +172,9 @@ function updateTotal() {
   );
 
   document.getElementById("total").innerText = total;
+
+  // 🔥 también actualizar carrito
+  updateCartTotal();
 }
 
 /* ------------------ MODAL ------------------ */
@@ -190,6 +198,9 @@ function renderCart() {
 
     cont.appendChild(div);
   });
+
+  // 🔥 actualizar total también al renderizar
+  updateCartTotal();
 }
 
 /* ------------------ PAGAR ------------------ */
@@ -217,6 +228,13 @@ function pagar() {
   document.getElementById("modal").style.display = "none";
 }
 
+function updateCartTotal() {
+  let total = carrito.reduce((sum, i) =>
+    sum + i.precio * i.cantidad, 0
+  );
+
+  document.getElementById("cartTotal").innerText = total;
+}
 /* ------------------ INIT ------------------ */
 cargarProductos();
 </script>
