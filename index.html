@@ -422,6 +422,7 @@ function cargarProductos() {
 }
 
 /* ------------------ RENDER PRODUCTOS ------------------ */
+
 function renderProductos() {
   const cont = document.getElementById("productos");
   cont.innerHTML = "";
@@ -485,7 +486,6 @@ function openCart() {
   updateCartTotal(); // 🔥 clave
 }
 
-/*
 function renderCart() {
   const cont = document.getElementById("items");
   cont.innerHTML = "";
@@ -510,26 +510,6 @@ function renderCart() {
     cont.appendChild(div);
   });
 
-  updateCartTotal();
-}
-*/
-function render() {
-  const cont = document.getElementById("productos");
-  cont.innerHTML = "";
-
-  productos.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "producto";
-
-    div.innerHTML = `
-      <strong>${p.nombre}</strong>
-      <br>$${p.precio}
-    `;
-
-    div.onclick = () => add(p.id);
-
-    cont.appendChild(div);
-  });
   updateCartTotal();
 }
 /* ------  MINIMIZAR CARRO -------*/
