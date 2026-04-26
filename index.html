@@ -468,6 +468,7 @@ function pagar() {
   const discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
   const desc = descEl ? descEl.value || "" : "";
 
+  /*
   const venta = {
     metodo: "efectivo",
     descuento: discount,
@@ -478,6 +479,28 @@ function pagar() {
       precio: i.precio,
       total: i.precio * i.cantidad
     }))
+  };
+  */
+  let items = carrito.map(i => ({
+    nombre: i.nombre,
+    cantidad: i.cantidad,
+    precio: i.precio,
+    total: i.precio * i.cantidad
+  }));
+  
+  // 🔥 agregar descuento como item negativo
+  if (discount > 0) {
+    items.push({
+      nombre: "Descuento - " + (desc || "Sin descripción"),
+      cantidad: 1,
+      precio: -discount,
+      total: -discount
+    });
+  }
+  
+  const venta = {
+    metodo: "efectivo",
+    items: items
   };
 
   const url = API +
