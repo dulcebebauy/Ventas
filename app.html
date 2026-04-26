@@ -794,6 +794,15 @@ function formatMoney(n) {
 /* ------------------ INIT ------------------ */
 cargarProductos();
 loadCart();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("PWA activa"))
+      .catch(err => console.log("SW error", err));
+  });
+}
+  
 </script>
 
 </body>
