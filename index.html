@@ -409,8 +409,8 @@ button {
   <div class="discount-section">
 
     <div class="discount-row">
-      <label>Descuento</label>
-      <input type="number" id="discount" placeholder="0" oninput="updateCartTotal()" />
+      <label>Descuento (%)</label>
+      <input type="number" id="discount" placeholder="0" min="0" max="100" oninput="updateCartTotal()" />
     </div>
   
     <div class="discount-row">
@@ -576,7 +576,8 @@ function pagar(metodo) {
 
   showLoader();
   
-  const discountEl = document.getElementById("discount");
+  //const discountEl = document.getElementById("discount");
+  const discountAmount = window.currentDiscount || 0;
   const descEl = document.getElementById("discountDesc");
 
   const discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
@@ -593,8 +594,8 @@ function pagar(metodo) {
     items.push({
       nombre: "Descuento - " + (desc || "Sin descripción"),
       cantidad: 1,
-      precio: -discount,
-      total: -discount
+      precio: -discountAmount,
+      total: -discountAmount
     });
   }
 
@@ -615,7 +616,7 @@ function pagar(metodo) {
 
       document.getElementById("modal").style.display = "none";
 
-      if (discountEl) discountEl.value = 0;
+      if (discountAmount) discountAmount.value = 0;
       if (descEl) descEl.value = "";
     })
     .catch(() => alert("Error venta"))
@@ -719,13 +720,18 @@ function updateCartTotal() {
   let discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
   let desc = descEl ? descEl.value : "";
 
-  let total = subtotal - discount;
+  //let total = subtotal - discount;
+  if (discountPercent > 100) discountPercent = 100; // máximo 100%
+
+  // calcular monto del descuento
+  let discountAmount = subtotal * discountPercent / 100;
+  let total = subtotal - discountAmount;
   if (total < 0) total = 0;
 
   document.getElementById("cartTotal").innerText = total;
 
   // 🔥 opcional: guardar estado visual (debug útil)
-  window.currentDiscount = discount;
+  window.currentDiscount = discountAmount;
   window.currentDiscountDesc = desc;
 }
 /* ------------------ CONTROL CANTIDADES ------------- */
