@@ -580,7 +580,7 @@ function pagar(metodo) {
   const discountAmount = window.currentDiscount || 0;
   const descEl = document.getElementById("discountDesc");
 
-  const discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
+  //const discount = discountEl ? parseFloat(discountEl.value) || 0 : 0;
   const desc = descEl ? descEl.value || "" : "";
 
   let items = carrito.map(i => ({
