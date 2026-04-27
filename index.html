@@ -438,7 +438,9 @@ function cargarProductos() {
   fetch(API + "?action=productos")
     .then(r => r.json())
     .then(data => {
-      productos = data;
+      productos = data.sort((a, b) =>
+        a.nombre.localeCompare(b.nombre, "es")
+      );
       renderProductos();
     })
     .catch(err => console.log(err));
