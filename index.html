@@ -907,6 +907,8 @@ function clearCart() {
 
   updateTotal();
   renderCart();
+  
+  navigator.vibrate?.(30);
 
   localStorage.removeItem("carrito");
 }
