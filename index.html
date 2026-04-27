@@ -367,6 +367,24 @@ button {
 #totalBox.bump {
   transform: scale(1.15);
 }
+.clear-cart {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #e53935;
+  color: white;
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.clear-cart:active {
+  transform: scale(0.98);
+}
 </style>
 </head>
 
@@ -405,7 +423,8 @@ button {
   <hr>
 
   <h3>Total: $<span id="cartTotal">0</span></h3>
-
+  <button class="clear-cart" onclick="clearCart()">Vaciar carrito</button>
+  
   <div class="discount-section">
 
     <div class="discount-row">
@@ -554,7 +573,8 @@ function renderCart() {
 
     cont.appendChild(div);
   });
-
+  const btn = document.querySelector(".clear-cart");
+  if (btn) btn.style.display = carrito.length ? "block" : "none";
   updateCartTotal();
 }
 /* ------  MINIMIZAR CARRO -------*/
@@ -840,6 +860,22 @@ modal.addEventListener("touchend", e => {
     }, 200);
   }
 });
+/*-------- limpiar ---------*/
+function clearCart() {
+
+  if (carrito.length === 0) return;
+
+  const confirmar = confirm("¿Vaciar todo el carrito?");
+
+  if (!confirmar) return;
+
+  carrito = [];
+
+  updateTotal();
+  renderCart();
+
+  localStorage.removeItem("carrito");
+}
 /* ------------------ INIT ------------------ */
 cargarProductos();
 loadCart();
