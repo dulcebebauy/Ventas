@@ -603,8 +603,11 @@ function renderCart() {
 
     cont.appendChild(div);
   });
-  const btn = document.querySelector(".clear-cart");
-  if (btn) btn.style.display = carrito.length ? "block" : "none";
+  
+  const clearBtn = document.querySelector(".clear-icon");
+  if (clearBtn) {
+    clearBtn.style.display = carrito.length ? "block" : "none";
+  }
   updateCartTotal();
 }
 /* ------  MINIMIZAR CARRO -------*/
