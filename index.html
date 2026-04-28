@@ -489,7 +489,8 @@ let cartOpen = false;
 function cargarProductos() {
   const cache = localStorage.getItem("productos");
   const localTimestamp = localStorage.getItem("productos_timestamp");
-
+  const serverTimestamp = "";
+  
   if(cache){
     productos = json.parse(cache);
     renderProoductos();
@@ -500,7 +501,7 @@ function cargarProductos() {
       fetch(API + "?action=timestamp")
         .then(r => r.json())
         .then(data => {
-          const serverTimestamp = data.timestamp;
+          serverTimestamp = data.timestamp;
           console.log(serverTimestamp);
         })
   .catch(err => console.log(err));
