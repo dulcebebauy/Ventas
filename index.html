@@ -489,7 +489,7 @@ let cartOpen = false;
 function cargarProductos() {
   const cache = localStorage.getItem("productos");
   const localTimestamp = localStorage.getItem("productos_timestamp");
-  const serverTimestamp = "";
+  let serverTimestamp = "";
   
   if(cache){
     productos = json.parse(cache);
