@@ -486,15 +486,36 @@ let cartOpen = false;
 
 /* ------------------ CARGAR PRODUCTOS ------------------ */
 function cargarProductos() {
-  fetch(API + "?action=productos")
-    .then(r => r.json())
-    .then(data => {
-      productos = data.sort((a, b) =>
-        a.nombre.localeCompare(b.nombre, "es")
-      );
-      renderProductos();
-    })
-    .catch(err => console.log(err));
+  const cache = localStorage.getItem("productos");
+  const localTimestamp = localStorage("productos_timestamp");
+
+  if(cache){
+    productos = json.parse(cache);
+    renderProoductos();
+  }
+
+  try{
+      // consultar si cambiaron los productos
+      const res = fetch(API + "?action=timestamp")
+        .then(data => res.json())
+        .then(serverTimestamp = data.timestamp)
+        .catch(err => console.log(err));
+
+      if (!localTimestamp || localTimestamp != serverTimestamp) {
+        fetch(API + "?action=productos")
+          .then(r => r.json())
+          .then(data => {
+            productos = data.sort((a, b) =>
+              a.nombre.localeCompare(b.nombre, "es")
+            );
+            renderProductos();
+          })
+          .catch(err => console.log(err));
+      }
+    else{
+      consol.log("productos al dia");
+    }
+  }
 }
 
 /* ------------------ RENDER PRODUCTOS ------------------ */
