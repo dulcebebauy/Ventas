@@ -499,8 +499,11 @@ function cargarProductos() {
       // consultar si cambiaron los productos
       fetch(API + "?action=timestamp")
         .then(r => r.json())
-        .then(serverTimestamp = r.timestamp)
-        .catch(err => console.log(err));
+        .then(data => {
+          const serverTimestamp = data.timestamp;
+          console.log(serverTimestamp);
+        })
+  .catch(err => console.log(err));
 
       if (!localTimestamp || localTimestamp != serverTimestamp) {
         fetch(API + "?action=productos")
