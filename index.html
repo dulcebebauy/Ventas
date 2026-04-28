@@ -509,6 +509,10 @@ function cargarProductos() {
               a.nombre.localeCompare(b.nombre, "es")
             );
             renderProductos();
+            localStorage.getItem("productos", json.stringify(productos));
+            localStorage.getItem("productos_timestamp", json.stringify(serverTimestamp));
+
+            
           })
           .catch(err => console.log(err));
       }
