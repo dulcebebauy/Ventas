@@ -704,7 +704,7 @@ function pagar(metodo) {
       carrito = [];
       updateTotal();
       renderCart();
-
+      updatePayButtons();
       document.getElementById("modal").style.display = "none";
       document.getElementById("discount").value = 0;
       document.getElementById("discountDesc").value = "";
