@@ -874,6 +874,7 @@ function loadCart() {
     carrito = JSON.parse(data);
     updateTotal();
   }
+  updatePayButtons();
 }
 /* ------------------ BUSCADOR -------------- */
 function filtrarProductos() {
@@ -940,7 +941,7 @@ function clearCart() {
 
   updateTotal();
   renderCart();
-  
+  updatePayButtons();
   navigator.vibrate?.(30);
 
   localStorage.removeItem("carrito");
