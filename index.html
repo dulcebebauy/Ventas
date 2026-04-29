@@ -945,9 +945,14 @@ function clearCart() {
 
   localStorage.removeItem("carrito");
 }
+function updatePayButtons() {
+  const buttons = document.querySelectorAll(".pay");
+  buttons.forEach(b => b.disabled = carrito.length === 0);
+}
 /* ------------------ INIT ------------------ */
 cargarProductos();
 loadCart();
+updatePayButtons();
 /*
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
